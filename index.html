@@ -71,12 +71,30 @@
             font-weight: 600;
             color: #0d47a1;
         }
+        .note {
+            font-style: italic;
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>연속출석 칭찬하기 이벤트 비용 시뮬레이션 리포트</h1>
+            <p>현실적인 학생 분포 반영</p>
+        </div>
+
+        <!-- 요약 및 권장사항 (최상단으로 이동) -->
+        <div class="card summary-card">
+            <h2>요약 및 권장사항</h2>
+            <ul>
+                <li><strong>최악의 경우 비용:</strong> 약 10.2백만원 (모든 참여자가 최적의 보상 전략 사용)</li>
+                <li><strong>현실적 예상 비용:</strong> 약 3.2백만원 (연속출석 일수별 성공률 반영)</li>
+                <li><strong>권장 예산:</strong> 3.5~4.5백만원 (안전 마진 포함)</li>
+                <li><strong>참여자 분포:</strong> 3일차 시작 50%, 5일차 시작 30%, 7일차 시작 20% (총 3,245명)</li>
+            </ul>
         </div>
 
         <div class="grid">
@@ -94,6 +112,7 @@
                 <div class="chart-container">
                     <canvas id="distributionChart"></canvas>
                 </div>
+                <p class="note">초등 저학년 학생들의 학습 패턴을 고려하여 연속출석 일수가 증가할수록 도달 확률이 낮아지는 현실적인 분포 적용</p>
             </div>
         </div>
 
@@ -112,17 +131,6 @@
                 <canvas id="costComparisonChart"></canvas>
             </div>
         </div>
-
-        <!-- 요약 및 권장사항 -->
-        <div class="card summary-card">
-            <h2>요약 및 권장사항</h2>
-            <ul>
-                <li><strong>최악의 경우 비용:</strong> 약 11.6백만원 (모든 참여자가 최적의 보상 전략 사용)</li>
-                <li><strong>현실적 예상 비용:</strong> 약 3.6백만원 (단계별 성공률 반영)</li>
-                <li><strong>문서 예상 비용:</strong> 약 5.0백만원</li>
-                <li><strong>권장 예산:</strong> 4.0~5.0백만원 (안전 마진 포함)</li>
-            </ul>
-        </div>
     </div>
 
     <script>
@@ -138,11 +146,12 @@
             }]
         };
 
+        // 현실적 분포 데이터
         const distributionData = {
-            labels: ['3일차 시작', '5일차 시작', '7일차 시작'],
+            labels: ['3일차 시작 (50%)', '5일차 시작 (30%)', '7일차 시작 (20%)'],
             datasets: [{
                 label: '참여자 수',
-                data: [974, 974, 1297],
+                data: [1623, 974, 648],
                 backgroundColor: ['#8884d8', '#82ca9d', '#ffc658'],
                 hoverOffset: 4
             }]
@@ -159,22 +168,23 @@
             }]
         };
 
+        // 현실적 분포 기준 비용 시뮬레이션 비교 데이터 (문서 예상 제거)
         const costComparisonData = {
-            labels: ['최악의 경우', '현실적 케이스', '문서 예상'],
+            labels: ['최악의 경우', '현실적 케이스'],
             datasets: [
                 {
                     label: '3일차 시작',
-                    data: [3409000, 1491740, 1654950],
+                    data: [5681667, 2486233],
                     backgroundColor: '#8884d8',
                 },
                 {
                     label: '5일차 시작',
-                    data: [3603800, 688777, 1427800],
+                    data: [3603800, 688777],
                     backgroundColor: '#82ca9d',
                 },
                 {
                     label: '7일차 시작',
-                    data: [4539500, 1369775, 1930775],
+                    data: [2269750, 684888],
                     backgroundColor: '#ffc658',
                 }
             ]
