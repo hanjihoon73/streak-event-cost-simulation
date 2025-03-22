@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>연속출석 칭찬하기 이벤트 비용 시뮬레이션 리포트</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 28px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        @media (min-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        .chart-container {
+            position: relative;
+            height: 250px;
+            width: 100%;
+        }
+        .card h2 {
+            font-size: 18px;
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .summary-card {
+            background-color: #e3f2fd;
+        }
+        .summary-card ul {
+            padding-left: 20px;
+        }
+        .summary-card li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+        .summary-card strong {
+            font-weight: 600;
+            color: #0d47a1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>연속출석 칭찬하기 이벤트 비용 시뮬레이션 리포트</h1>
+        </div>
+
+        <div class="grid">
+            <!-- 최대 보상 케이스 -->
+            <div class="card">
+                <h2>시작 시점별 최대 보상액</h2>
+                <div class="chart-container">
+                    <canvas id="maxRewardChart"></canvas>
+                </div>
+            </div>
+
+            <!-- 참여자 분포 -->
+            <div class="card">
+                <h2>참여자 분포 (총 3,245명)</h2>
+                <div class="chart-container">
+                    <canvas id="distributionChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 성공률 -->
+        <div class="card">
+            <h2>연속 출석 일수별 성공률</h2>
+            <div class="chart-container">
+                <canvas id="successRateChart"></canvas>
+            </div>
+        </div>
+
+        <!-- 비용 시뮬레이션 비교 -->
+        <div class="card">
+            <h2>비용 시뮬레이션 비교</h2>
+            <div class="chart-container" style="height: 300px;">
+                <canvas id="costComparisonChart"></canvas>
+            </div>
+        </div>
+
+        <!-- 요약 및 권장사항 -->
+        <div class="card summary-card">
+            <h2>요약 및 권장사항</h2>
+            <ul>
+                <li><strong>최악의 경우 비용:</strong> 약 11.6백만원 (모든 참여자가 최적의 보상 전략 사용)</li>
+                <li><strong>현실적 예상 비용:</strong> 약 3.6백만원 (단계별 성공률 반영)</li>
+                <li><strong>문서 예상 비용:</strong> 약 5.0백만원</li>
+                <li><strong>권장 예산:</strong> 4.0~5.0백만원 (안전 마진 포함)</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // 데이터 정의
+        const maxRewardData = {
+            labels: ['3일차 시작', '5일차 시작', '7일차 시작'],
+            datasets: [{
+                label: '최대 보상액',
+                data: [3500, 3700, 3500],
+                backgroundColor: ['#8884d8', '#82ca9d', '#ffc658'],
+                borderColor: ['#7773c7', '#71b98c', '#eeb547'],
+                borderWidth: 1
+            }]
+        };
+
+        const distributionData = {
+            labels: ['3일차 시작', '5일차 시작', '7일차 시작'],
+            datasets: [{
+                label: '참여자 수',
+                data: [974, 974, 1297],
+                backgroundColor: ['#8884d8', '#82ca9d', '#ffc658'],
+                hoverOffset: 4
+            }]
+        };
+
+        const successRateData = {
+            labels: ['3일차', '5일차', '7일차'],
+            datasets: [{
+                label: '성공률 (%)',
+                data: [85, 55, 35],
+                backgroundColor: ['#8884d8', '#82ca9d', '#ffc658'],
+                borderColor: ['#7773c7', '#71b98c', '#eeb547'],
+                borderWidth: 1
+            }]
+        };
+
+        const costComparisonData = {
+            labels: ['최악의 경우', '현실적 케이스', '문서 예상'],
+            datasets: [
+                {
+                    label: '3일차 시작',
+                    data: [3409000, 1491740, 1654950],
+                    backgroundColor: '#8884d8',
+                },
+                {
+                    label: '5일차 시작',
+                    data: [3603800, 688777, 1427800],
+                    backgroundColor: '#82ca9d',
+                },
+                {
+                    label: '7일차 시작',
+                    data: [4539500, 1369775, 1930775],
+                    backgroundColor: '#ffc658',
+                }
+            ]
+        };
+
+        // 차트 렌더링
+        window.onload = function() {
+            // 최대 보상 케이스 차트
+            new Chart(document.getElementById('maxRewardChart'), {
+                type: 'bar',
+                data: maxRewardData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 3000,
+                            max: 4000,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '원';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.y + '원';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 참여자 분포 차트
+            new Chart(document.getElementById('distributionChart'), {
+                type: 'pie',
+                data: distributionData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed || 0;
+                                    const percentage = ((value / 3245) * 100).toFixed(1);
+                                    return `${label}: ${value}명 (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 성공률 차트
+            new Chart(document.getElementById('successRateChart'), {
+                type: 'bar',
+                data: successRateData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.y + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 비용 시뮬레이션 비교 차트
+            new Chart(document.getElementById('costComparisonChart'), {
+                type: 'bar',
+                data: costComparisonData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            stacked: true
+                        },
+                        y: {
+                            stacked: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return (value / 1000000).toFixed(1) + '백만';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.parsed.y;
+                                    return context.dataset.label + ': ' + value.toLocaleString() + '원';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        };
+    </script>
+</body>
+</html>
