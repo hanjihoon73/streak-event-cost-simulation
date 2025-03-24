@@ -83,17 +83,18 @@
     <div class="container">
         <div class="header">
             <h1>연속출석 칭찬하기 이벤트 비용 시뮬레이션 리포트</h1>
-            <p>현실적인 학생 분포 반영</p>
+            <p>현실적인 학생 분포 및 수정된 최대 보상 케이스 반영</p>
         </div>
 
         <!-- 요약 및 권장사항 (최상단으로 이동) -->
         <div class="card summary-card">
             <h2>요약 및 권장사항</h2>
             <ul>
-                <li><strong>최악의 경우 비용:</strong> 약 10.2백만원 (모든 참여자가 최적의 보상 전략 사용)</li>
-                <li><strong>현실적 예상 비용:</strong> 약 3.2백만원 (연속출석 일수별 성공률 반영)</li>
-                <li><strong>권장 예산:</strong> 3.5~4.5백만원 (안전 마진 포함)</li>
+                <li><strong>최악의 경우 비용:</strong> 약 12.5백만원 (모든 참여자가 최적의 보상 전략 사용)</li>
+                <li><strong>현실적 예상 비용:</strong> 약 3.7백만원 (연속출석 일수별 성공률 반영)</li>
+                <li><strong>권장 예산:</strong> 4.0~5.0백만원 (안전 마진 포함)</li>
                 <li><strong>참여자 분포:</strong> 3일차 시작 50%, 5일차 시작 30%, 7일차 시작 20% (총 3,245명)</li>
+                <li><strong>최대 보상액:</strong> 3일차 시작 3,500원, 5일차 시작 4,000원, 7일차 시작 4,600원</li>
             </ul>
         </div>
 
@@ -104,6 +105,7 @@
                 <div class="chart-container">
                     <canvas id="maxRewardChart"></canvas>
                 </div>
+                <p class="note">각 시작 시점에서 최적의 출석 패턴으로 얻을 수 있는 최대 보상액</p>
             </div>
 
             <!-- 참여자 분포 -->
@@ -122,6 +124,7 @@
             <div class="chart-container">
                 <canvas id="successRateChart"></canvas>
             </div>
+            <p class="note">각 단계별 성공률: 3일차 85%, 5일차 55%, 7일차 35%</p>
         </div>
 
         <!-- 비용 시뮬레이션 비교 -->
@@ -130,6 +133,7 @@
             <div class="chart-container" style="height: 300px;">
                 <canvas id="costComparisonChart"></canvas>
             </div>
+            <p class="note">최악의 경우: 모든 참여자가 최적의 보상 전략 사용 / 현실적 케이스: 단계별 성공률 반영</p>
         </div>
     </div>
 
@@ -139,7 +143,7 @@
             labels: ['3일차 시작', '5일차 시작', '7일차 시작'],
             datasets: [{
                 label: '최대 보상액',
-                data: [3500, 3700, 3500],
+                data: [3500, 4000, 4600],
                 backgroundColor: ['#8884d8', '#82ca9d', '#ffc658'],
                 borderColor: ['#7773c7', '#71b98c', '#eeb547'],
                 borderWidth: 1
@@ -168,23 +172,23 @@
             }]
         };
 
-        // 현실적 분포 기준 비용 시뮬레이션 비교 데이터 (문서 예상 제거)
+        // 비용 시뮬레이션 데이터 (수정된 최대 보상액 반영)
         const costComparisonData = {
             labels: ['최악의 경우', '현실적 케이스'],
             datasets: [
                 {
                     label: '3일차 시작',
-                    data: [5681667, 2486233],
+                    data: [5680500, 2181260],
                     backgroundColor: '#8884d8',
                 },
                 {
                     label: '5일차 시작',
-                    data: [3603800, 688777],
+                    data: [3896000, 1025148],
                     backgroundColor: '#82ca9d',
                 },
                 {
                     label: '7일차 시작',
-                    data: [2269750, 684888],
+                    data: [2980800, 528528],
                     backgroundColor: '#ffc658',
                 }
             ]
@@ -203,7 +207,7 @@
                         y: {
                             beginAtZero: false,
                             min: 3000,
-                            max: 4000,
+                            max: 5000,
                             ticks: {
                                 callback: function(value) {
                                     return value + '원';
